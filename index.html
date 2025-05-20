@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Ophthalmology Teleconsultation</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'>
+    <link rel='stylesheet' type='text/css' href='main.css'>
+    <style>
+         :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #f8f9fa;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+        }
+        
+        body {
+            background: url('eye4.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+        
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        header {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(31, 38, 135, 0.07);
+            padding: 24px 0 10px 0;
+            margin-bottom: 20px;
+        }
+        
+        header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+        
+        #video-streams {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            padding: 0 10px;
+        }
+        
+        .video-container {
+            background: #000;
+            border-radius: 14px;
+            overflow: hidden;
+            position: center;
+            aspect-ratio: 16/9;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-player {
+            width: 100%;
+            height: 100%;
+            background: #222;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .video-player video,
+        .video-player canvas {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            margin: auto;
+        }
+        
+        #join-btn {
+            background: var(--primary-color);
+            color: #fff;
+            font-size: 1.1rem;
+            padding: 18px 48px;
+            border: none;
+            border-radius: 32px;
+            box-shadow: 0 4px 16px rgba(31, 38, 135, 0.13);
+            margin: 30px auto 0 auto;
+            display: block;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: background 0.2s, transform 0.2s;
+        }
+        
+        #join-btn:hover {
+            background: #185abc;
+            transform: scale(1.04);
+        }
+        
+        #stream-controls {
+            display: none;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.97);
+            padding: 18px 32px;
+            border-radius: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.09);
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #leave-btn {
+            background: var(--danger-color);
+            color: #fff;
+        }
+        
+        #mic-btn,
+        #camera-btn {
+            background: var(--primary-color);
+            color: #fff;
+        }
+        
+        #telegram-btn {
+            background: #229ED9;
+            color: #fff;
+        }
+        
+        .control-btn {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+        }
+        
+        button:hover {
+            opacity: 0.92;
+            transform: translateY(-2px);
+        }
+        
+        #invite-section {
+            max-width: 600px;
+            margin: 30px auto 0 auto;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px 18px;
+            box-shadow: 0 2px 8px rgba(31, 38, 135, 0.10);
+        }
+        
+        #invite-link {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1rem;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-size: 1rem;
+            z-index: 100;
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            color: #666;
+            margin-top: 40px;
+            font-size: 1rem;
+            padding-bottom: 20px;
+        }
+        
+        @media (max-width: 900px) {
+            #video-streams {
+                grid-template-columns: 1fr;
+            }
+            #stream-controls {
+                padding: 10px 8px;
+                bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            #invite-section {
+                flex-direction: column;
+                gap: 6px;
+            }
+            #invite-link {
+                min-width: 0;
+            }
+            #join-btn {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Rotating SVG background -->
+    <div id="bg-rotator" style="position:fixed; z-index:0; left:0; top:0; width:100vw; height:100vh; overflow:hidden; pointer-events:none;">
+        <svg id="bg-svg" width="100%" height="100%" viewBox="0 0 800 600" style="opacity:0.18;">
+            <g id="rotating-group">
+                <ellipse cx="400" cy="300" rx="320" ry="120" fill="#fff" />
+                <ellipse cx="400" cy="300" rx="220" ry="80" fill="#1a73e8" />
+                <ellipse cx="400" cy="300" rx="120" ry="40" fill="#43cea2" />
+            </g>
+        </svg>
+    </div>
+    <header>
+        <h1><i class="fas fa-eye"></i> Ophthalmology Teleconsultation</h1>
+    </header>
+
+    <!-- Animated Eye Images -->
+    <div id="eye-images" style="display: flex; justify-content: center; gap: 30px; margin-bottom: 20px;">
+        <img src="eye 1.png" class="eye-img" style="width:120px; border-radius:50%; box-shadow:0 4px 16px rgba(0,0,0,0.18);">
+        <img src="eye 2.jpeg" class="eye-img" style="width:120px; border-radius:50%; box-shadow:0 4px 16px rgba(0,0,0,0.18);">
+        <img src="eye 3.jpeg" class="eye-img" style="width:120px; border-radius:50%; box-shadow:0 4px 16px rgba(0,0,0,0.18);">
+        <img src="eye4.jpeg" class="eye-img" style="width:120px; border-radius:50%; box-shadow:0 4px 16px rgba(0,0,0,0.18);">
+    </div>
+
+    <div id="invite-section">
+        <input type="text" id="invite-link" readonly>
+        <button id="copy-link-btn"><i class="fas fa-copy"></i> Copy Link</button>
+    </div>
+    <div class="notification" id="copy-notification">Link copied!</div>
+
+    <div id="video-streams"></div>
+    <button id="join-btn"><i class="fas fa-video"></i> Join</button>
+    <div id="stream-controls">
+        <button id="leave-btn"><i class="fas fa-sign-out-alt"></i> Leave</button>
+        <button id="mic-btn"><i class="fas fa-microphone"></i> Mic on</button>
+        <button id="camera-btn"><i class="fas fa-video"></i> Camera on</button>
+        <button id="telegram-btn"><i class="fab fa-telegram"></i> Call in Telegram</button>
+        <button class="control-btn" id="invite-btn" title="Share call">
+            <i class="fas fa-share"></i>
+        </button>
+    </div>
+
+    <footer>
+        <p>Secure HIPAA-compliant video conferencing</p>
+    </footer>
+
+    <script src="AgoraRTC_N-4.7.3.js"></script>
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate eye images with floating movement
+            const eyes = document.querySelectorAll('.eye-img');
+            eyes.forEach((eye, i) => {
+                let angle = 0;
+                setInterval(() => {
+                    angle += 0.03 + i * 0.01;
+                    eye.style.transform = `translateY(${Math.sin(angle)*10}px) scale(1.05)`;
+                }, 30);
+            });
+
+            // Rotating SVG background animation
+            const group = document.getElementById('rotating-group');
+            let rot = 0;
+
+            function rotateBG() {
+                rot += 0.1;
+                group.setAttribute('transform', `rotate(${rot} 400 300)`);
+                requestAnimationFrame(rotateBG);
+            }
+            rotateBG();
+        });
+    </script>
+</body>
+
+</html>
